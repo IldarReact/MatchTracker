@@ -1,101 +1,138 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
+import type { Match, MatchStatus } from "@/lib/types";
+import { fetchMatches } from "@/lib/api";
+import StatusFilter from "@/components/status-filter";
+import MatchCard from "@/components/match-card";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<MatchStatus | "ALL">("ALL");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const loadMatches = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchMatches();
+      setMatches(data.matches);
+    } catch (err) {
+      console.error(err);
+      setError("Ошибка: не удалось загрузить информацию");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadMatches();
+  }, []);
+
+  const filteredMatches =
+    statusFilter === "ALL"
+      ? matches
+      : matches.filter((match) => match.status === statusFilter);
+
+  const mapStatusToRussian = (status: MatchStatus) => {
+    switch (status) {
+      case "Ongoing":
+        return "Live";
+      case "Finished":
+        return "Finished";
+      case "Scheduled":
+        return "Match preparing";
+      default:
+        return status;
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-[var(--background)] text-white p-4 sm:p-6">
+      <div className="w-full max-w-lg mx-auto sm:max-w-full">
+        {/* Шапка */}
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8">
+          <h1 className="text-2xl font-bold mb-4 sm:mb-0">Match Tracker</h1>
+
+          {/* Фильтр и кнопка */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            {error && (
+              <div className="flex items-center justify-center text-[#FF3B5C] bg-[#1A1A1A] p-4 rounded-md w-full sm:w-auto mb-4 sm:mb-0">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mr-2"
+                >
+                  <path
+                    d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z"
+                    fill="#FF3B5C"
+                  />
+                </svg>
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={loadMatches}
+              disabled={loading}
+              className={`flex items-center justify-center px-4 py-2 rounded-md text-white transition-all duration-300 w-full sm:w-auto ${
+                loading ? "bg-[#EB0237]" : "bg-[#FF1744] hover:bg-[#701328]"
+              }`}
+            >
+              Обновить
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className={`ml-2 ${loading ? "animate-spin" : ""}`}
+              >
+                <path
+                  d="M17.3583 4.17502C15.8416 2.34169 13.6583 1.16669 11.2499 1.00002C6.82492 0.658354 2.99992 4.07502 2.99992 8.33335H0.833252L4.16659 11.6667L7.49992 8.33335H5.33325C5.33325 5.30002 7.94992 2.83335 11.0833 3.00835C12.8333 3.10835 14.3749 4.00835 15.3749 5.34169C17.3166 7.85002 16.8749 11.4334 14.4166 13.3834C12.9999 14.5 11.1666 14.8334 9.41659 14.4167C8.28325 14.1417 7.28325 13.5584 6.49992 12.775L4.94992 14.325C6.04992 15.425 7.44992 16.2 9.03325 16.5834C10.1999 16.8584 11.3666 16.8584 12.5333 16.6C13.6999 16.3417 14.7833 15.8 15.7166 15.0334C18.9166 12.4334 19.4999 7.60002 17.3583 4.17502Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* Фильтр */}
+        <div className="mb-4 w-full sm:w-64">
+          <StatusFilter
+            currentStatus={statusFilter}
+            onChange={setStatusFilter}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+
+        {/* Список матчей */}
+        <div className="space-y-4">
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-[#FF1744]" />
+            </div>
+          ) : (
+            filteredMatches.map((match, index) => (
+              <MatchCard
+                key={index}
+                match={match}
+                statusLabel={mapStatusToRussian(match.status)}
+              />
+            ))
+          )}
+
+          {!loading && filteredMatches.length === 0 && (
+            <div className="text-center py-10 text-gray-400">
+              Нет матчей для отображения
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }
