@@ -17,19 +17,16 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
 
-  // Check viewport width on mount and when window resizes
+  // Проверяем ширину экрана при загрузке и при изменении размера окна
   useEffect(() => {
     const checkViewport = () => {
       setIsMobile(window.innerWidth < 1200);
     };
 
-    // Initial check
     checkViewport();
 
-    // Add resize listener
     window.addEventListener("resize", checkViewport);
 
-    // Cleanup
     return () => window.removeEventListener("resize", checkViewport);
   }, []);
 
@@ -37,12 +34,10 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
     setIsExpanded(!isExpanded);
   };
 
-  // Mobile version uses transition animation, desktop version doesn't
-  const expandedContentClass = isMobile
-    ? `overflow-hidden transition-all duration-300 ${
-        isExpanded ? "max-h-[1000px]" : "max-h-0"
-      }`
-    : "";
+  // Анимация для обеих версий - мобильной и десктопной
+  const expandedContentClass = `overflow-hidden transition-all duration-300 ${
+    isExpanded ? "max-h-[1000px]" : "max-h-0"
+  }`;
 
   return (
     <div className="bg-[var(--foreground)] rounded-lg overflow-hidden">
@@ -74,10 +69,10 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
         </div>
       </div>
 
-      {/* Mobile expanded content with animation */}
+      {/* Раскрывающийся контент для мобильных */}
       {isMobile ? (
         <div className={expandedContentClass}>
-          <div className="p-4 bg-[#141414]">
+          <div className="p-4 bg-[var(--foreground)]">
             <div className="space-y-4">
               <div className="space-y-3">
                 {match.homeTeam.players.map((player, index) => (
@@ -106,8 +101,8 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
           </div>
         </div>
       ) : (
-        /* Desktop expanded content without animation */
-        isExpanded && (
+        /* Раскрывающийся контент для десктопа */
+        <div className={expandedContentClass}>
           <div className="p-4 bg-[var(--foreground)]">
             <div className="grid grid-cols-2 gap-8">
               <div>
@@ -136,10 +131,10 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
               </div>
             </div>
           </div>
-        )
+        </div>
       )}
 
-      {/* Mobile-only bottom chevron */}
+      {/* Нижняя стрелка только для мобильных */}
       {isMobile && (
         <div
           className="flex justify-center p-2 cursor-pointer"

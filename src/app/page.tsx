@@ -80,7 +80,7 @@ export default function Home() {
             <button
               onClick={loadMatches}
               disabled={loading}
-              className={`flex items-center justify-center px-4 py-2 rounded-md text-white transition-all duration-300 w-full sm:w-auto ${
+              className={`flex items-center justify-center px-4 py-2 rounded-md text-white transition-all duration-300 w-full sm:w-auto cursor-pointer ${
                 loading ? "bg-[#EB0237]" : "bg-[#FF1744] hover:bg-[#701328]"
               }`}
             >

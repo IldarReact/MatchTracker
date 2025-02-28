@@ -43,7 +43,7 @@ export default function StatusFilter({
       {/* Кнопка для открытия/закрытия dropdown */}
       <button
         onClick={toggleDropdown}
-        className="w-full bg-[var(--content)] text-white px-4 py-2 rounded-lg flex items-center justify-between text-sm transition-colors"
+        className="w-full bg-[var(--content)] text-white px-4 py-2 rounded-lg flex items-center justify-between text-sm transition-colors cursor-pointer"
       >
         <span>{getStatusLabel(currentStatus)}</span>
         <svg
