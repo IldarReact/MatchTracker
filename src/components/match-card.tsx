@@ -40,7 +40,7 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
   }`;
 
   return (
-    <div className="bg-[var(--foreground)] rounded-lg overflow-hidden">
+    <div className="bg-[var(--foreground)] hover:bg-[#0B0F13] rounded-lg overflow-hidden">
       <div
         className="flex items-center justify-between p-4 cursor-pointer"
         onClick={toggleExpand}
@@ -72,7 +72,7 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
       {/* Раскрывающийся контент для мобильных */}
       {isMobile ? (
         <div className={expandedContentClass}>
-          <div className="p-4 bg-[var(--foreground)]">
+          <div className="p-4 ">
             <div className="space-y-4">
               <div className="space-y-3">
                 {match.homeTeam.players.map((player, index) => (
@@ -103,7 +103,7 @@ export default function MatchCard({ match, statusLabel }: MatchCardProps) {
       ) : (
         /* Раскрывающийся контент для десктопа */
         <div className={expandedContentClass}>
-          <div className="p-4 bg-[var(--foreground)]">
+          <div className="p-4">
             <div className="grid grid-cols-2 gap-8">
               <div>
                 <div className="flex gap-6">
