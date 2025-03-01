@@ -6,6 +6,7 @@ import type { Match, MatchStatus } from "@/lib/types";
 import { fetchMatches } from "@/lib/api";
 import StatusFilter from "@/components/status-filter";
 import MatchCard from "@/components/match-card";
+import ErrorMessage from "@/components/error-message";
 
 export default function Home() {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -55,28 +56,8 @@ export default function Home() {
         {/* Шапка */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8">
           <h1 className="text-2xl font-bold mb-4 sm:mb-0">Match Tracker</h1>
-
-          {/* Фильтр и кнопка */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-            {error && (
-              <div className="flex items-center justify-center text-[#FF3B5C] bg-[#1A1A1A] p-4 rounded-md w-full sm:w-auto mb-4 sm:mb-0">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mr-2"
-                >
-                  <path
-                    d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z"
-                    fill="#FF3B5C"
-                  />
-                </svg>
-                {error}
-              </div>
-            )}
-
+          <div className="flex items-center gap-4">
+            {error && <ErrorMessage message={error} />}
             <button
               onClick={loadMatches}
               disabled={loading}
