@@ -69,25 +69,25 @@ export default function StatusFilter({
           <ul className="py-1 text-white">
             <li
               onClick={() => handleSelect("ALL")}
-              className="px-4 py-2 text-sm hover:bg-[var(--content)] cursor-pointer transition-colors"
+              className="px-4 py-2 text-sm hover:bg-[#0F1318] hover:text-[#68696A] cursor-pointer transition-colors"
             >
               Все статусы
             </li>
             <li
               onClick={() => handleSelect("Ongoing")}
-              className="px-4 py-2 text-sm hover:bg-[var(--content)] cursor-pointer transition-colors"
+              className="px-4 py-2 text-sm hover:bg-[#0F1318] hover:text-[#68696A] cursor-pointer transition-colors"
             >
               Live
             </li>
             <li
               onClick={() => handleSelect("Finished")}
-              className="px-4 py-2 text-sm hover:bg-[var(--content)] cursor-pointer transition-colors"
+              className="px-4 py-2 text-sm hover:bg-[#0F1318] hover:text-[#68696A] cursor-pointer transition-colors"
             >
               Finished
             </li>
             <li
               onClick={() => handleSelect("Scheduled")}
-              className="px-4 py-2 text-sm hover:bg-[var(--content)] cursor-pointer transition-colors"
+              className="px-4 py-2 text-sm hover:bg-[#0F1318] hover:text-[#68696A] cursor-pointer transition-colors"
             >
               Match preparing
             </li>
